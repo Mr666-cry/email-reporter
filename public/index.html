@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SamuDev - Email Scam Reporter</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: linear-gradient(135deg, #f3f0ff 0%, #e9d8fd 100%); color: #333; margin: 0; padding: 20px; min-height: 100vh; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(107, 70, 193, 0.12); border: 1px solid #d6bcfa; }
+        .logo-header { text-align: center; margin-bottom: 10px; }
+        .logo-header svg { width: 50px; height: 50px; fill: #6b46c1; }
+        h1 { color: #553c9a; text-align: center; margin-top: 5px; }
+        .nav-link { display: flex; justify-content: flex-end; align-items: center; gap: 5px; margin-bottom: 15px; color: #6b46c1; font-weight: bold; text-decoration: none; }
+        .nav-link:hover { text-decoration: underline; }
+        .btn { background: #6b46c1; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; font-size: 16px; transition: 0.2s; margin-top: 10px; box-shadow: 0 4px 12px rgba(107, 70, 193, 0.2); }
+        .btn:hover { background: #553c9a; }
+        label { font-weight: 600; color: #4a5568; display: block; margin-top: 15px; }
+        input, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #cbd5e0; border-radius: 8px; font-size: 14px; outline: none; transition: border 0.2s; background: #faf5ff; }
+        input:focus, textarea:focus { border-color: #6b46c1; background: #fff; box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.15); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="admin.html" class="nav-link">⚙️ Masuk Menu Admin</a>
+    <div class="logo-header">
+        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-V6l8 5 8-5v2z"/></svg>
+    </div>
+    <h1>Email Scam Reporter</h1>
+    <p style="text-align: center; color: #718096; font-size: 14px;">Kirim laporan penipuan telegram & phising dengan aman via SMTP.</p>
+
+    <label>Email Tujuan (Pisahkan dengan koma):</label>
+    <input type="text" id="targetEmails" value="support@telegram.org, help@monzo.com, abuse@telegram.org">
+
+    <label>Judul Subject:</label>
+    <input type="text" id="subject" value='Urgent Request: Please Immediately Apply "Scam/Fake" Label to Telegram Accounts Impersonating Monzo'>
+
+    <label>Template Pesan:</label>
+    <textarea id="message" rows="12">Dear Monzo Security Team,
+
+We have identified several fake Telegram accounts impersonating the Monzo Support Team. These accounts use a name, logo, and identity similar to Monzo Support Services. They are using this fake identity to commit what is called FRAUD.
+
+In order for Telegram to confirm that all of these accounts are Scam or Fake accounts, you can report them directly to Telegram via the following email:
+abuse@telegram.org
+
+To the Monzo Service Team, I kindly request that you follow up on the fraud or impersonation carried out in the name of the Monzo Service Team.
+
+Here are the accounts that we have investigated:
+https://t.me/Official_Monzo_Cs
+https://t.me/Official_Monzo_Cs1
+https://t.me/Official_Monzo_Cs2
+
+After my investigation, many people have lost their money due to falling victim to this scam, with the largest amount being 1,000 USD.
+
+Thank you to the Telegram Service Team and Monzo Service Team for applying the Fake or Scam Label so that no one becomes a victim of this Phishing scam.</textarea>
+
+    <button class="btn" onclick="sendEmail()">Kirim Laporan (1x)</button>
+</div>
+
+<script>
+    async function sendEmail() {
+        const targets = document.getElementById('targetEmails').value.split(',').map(e => e.trim());
+        const subject = document.getElementById('subject').value;
+        const message = document.getElementById('message').value;
+
+        alert("Mengirim laporan via SMTP...");
+        try {
+            const res = await fetch('/api/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ targets, subject, message })
+            });
+            const data = await res.json();
+            alert(data.message);
+        } catch (err) {
+            alert("Gagal terhubung ke server: " + err.message);
+        }
+    }
+</script>
+
+</body>
+</html>
